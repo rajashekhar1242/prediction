@@ -1,0 +1,130 @@
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Navbar -->
+<nav class="custom-navbar">
+  <div class="container">
+    <div class="navbar-brand">
+      <a href="{{ url_for('main.index') }}">Health Companion</a>
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+    <ul class="navbar-links" id="navbar-links">
+      <li><a href="{{ url_for('main.index') }}" class="nav-btn">Home</a></li>
+      <li><a href="#chatbot" class="nav-btn">Chat with Bot</a></li>
+      <li><a href="#service" class="nav-btn">About</a></li>
+      <li><a href="#contact" class="nav-btn">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Toggle Script -->
+<script>
+  function toggleMenu() {
+    const nav = document.getElementById("navbar-links");
+    nav.classList.toggle("show");
+  }
+</script>
+
+<!-- Inline CSS -->
+<style>
+  body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+  }
+
+  .custom-navbar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: #6c757d;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  .custom-navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  .navbar-brand a {
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .menu-toggle {
+    display: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: white;
+  }
+
+  .navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navbar-links li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .navbar-links li a:hover {
+    color: #ddd;
+  }
+
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: block;
+    }
+
+    .navbar-links {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      padding-top: 10px;
+    }
+
+    .navbar-links.show {
+      display: flex;
+    }
+
+    .navbar-links li {
+      width: 100%;
+    }
+
+    .navbar-links li a {
+      display: block;
+      padding: 10px 0;
+      width: 100%;
+    }
+
+    .navbar-links .nav-btn {
+      padding: 8px 16px;
+      background-color: #1f0b15;
+      border-radius: 20px;
+      font-weight: 500;
+      text-decoration: none;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar-links .nav-btn:hover {
+      background-color: #b92d6d;
+    }
+  }
+</style>

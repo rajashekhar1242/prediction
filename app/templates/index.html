@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  {% include '_banner.html' %}
+  {% include '_services.html' %}
+  
+  <section id="chatbot" style="text-align: center;">
+    {% include 'chtbot-button.html' %}
+  </section>
+  
+  {% include '_contact.html' %}
+{% endblock %}

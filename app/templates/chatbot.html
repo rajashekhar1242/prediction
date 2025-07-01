@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Health Assistant Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap + Google Font -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(120deg, #fce4ec, #fff3f3);
+      margin: 0;
+      padding: 0;
+    }
+
+    .chat-container {
+      max-width: 900px; /* or try 100%, or remove it for full width */
+      margin: 60px auto;
+      background-color: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+
+    .chat-header {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #d63384;
+    }
+
+    .chat-box {
+      height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      background-color: #fefefe;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      margin-bottom: 15px;
+    }
+
+    .bot-message,
+    .user-message {
+      max-width: 75%;
+      padding: 12px 16px;
+      margin: 8px 0;
+      border-radius: 20px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .bot-message {
+      background-color: #ffe6e6;
+      align-self: flex-start;
+    }
+
+    .user-message {
+      background-color: #d1e7ff;
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    .chat-form input {
+      border-radius: 25px;
+    }
+
+    .chat-form button {
+      border-radius: 25px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-box::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-box::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 10px;
+    }
+
+    .custom-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.results-box {
+  margin-top: 20px;
+}
+
+  </style>
+</head>
+<body>
+  {% include '_navbar.html' %}
+<div class="chat-container">
+  <div class="chat-header">👩‍⚕️ Health Assistant Chatbot</div>
+  <div class="chat-box" id="chatBox">
+    <div class="bot-message">👋 Hello! I'm your Health Assistant. Tell me one symptom at a time. Type 'done' when finished.</div>
+  </div>
+  <form id="chatForm" class="chat-form d-flex">
+    <input type="text" id="userInput" class="form-control me-2" placeholder="e.g., headache" required />
+    <button type="submit" class="btn btn-danger">Send</button>
+  </form>
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<div style="text-align: center; margin-top: 30px;">
+  <button onclick="openMapModal()" class="btn btn-primary" style="padding: 10px 20px; font-weight: bold;">
+    📍 Locate Nearby Hospitals
+  </button>
+</div>
+
+<!-- Map Modal -->
+<div id="mapModal" class="custom-modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeMapModal()">&times;</span>
+    <h3>Select Your Location</h3>
+    <div id="map" style="height: 400px;"></div>
+  </div>
+</div>
+
+<!-- Results Container -->
+
+<div id="resultsContainer" class="results-box" style="max-width: 600px; margin: 20px auto;"></div>
+
+
+</div>
+<script>
+
+
+
+
+  const chatBox = document.getElementById("chatBox");
+  const chatForm = document.getElementById("chatForm");
+  const userInput = document.getElementById("userInput");
+  
+  // 👇 Add this function outside sendMessage
+  function submitSelectedSymptoms() {
+    const checkboxes = document.querySelectorAll('input[name="symptom"]:checked');
+    const selected = Array.from(checkboxes).map(cb => cb.value);
+
+    if (selected.length === 0) {
+      alert("Please select at least one symptom or type 'no' in the chat.");
+      return;
+    }
+
+    const message = selected.join(", ");
+    sendMessage(message);
+
+    // 🧹 Remove the checkbox container after submission
+    const symptomContainer = document.getElementById("symptom-checkboxes");
+    if (symptomContainer) {
+      symptomContainer.remove();
+    }
+  }
+  async function sendMessage(message) {
+    // Show user message
+    chatBox.innerHTML += `<div class="user-message">🧑‍💬 ${message}</div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Send message to Flask backend
+    const response = await fetch("/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
+
+    const data = await response.json();
+
+    // Show bot response (checkbox HTML supported)
+    chatBox.innerHTML += `<div class="bot-message">${data.response}</div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  chatForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const message = userInput.value.trim();
+    if (!message) return;
+    sendMessage(message);
+    userInput.value = '';
+  });
+
+
+
+  let map, marker, selectedLat, selectedLon;
+
+  function openMapModal() {
+    document.getElementById('mapModal').style.display = 'block';
+
+    setTimeout(() => {
+      if (!map) {
+        map = L.map('map').setView([17.385, 78.4867], 12); // Hyderabad default
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        map.on('click', function (e) {
+          selectedLat = e.latlng.lat;
+          selectedLon = e.latlng.lng;
+
+          if (marker) {
+            map.removeLayer(marker);
+          }
+
+          marker = L.marker([selectedLat, selectedLon]).addTo(map)
+            .bindPopup(`Selected: ${selectedLat.toFixed(4)}, ${selectedLon.toFixed(4)}`)
+            .openPopup();
+
+          // Close modal and fetch hospitals after short delay
+          setTimeout(() => {
+            closeMapModal();
+            fetchHospitals();
+          }, 1000);
+        });
+      } else {
+        map.invalidateSize();
+      }
+    }, 200);
+  }
+
+  function closeMapModal() {
+    document.getElementById('mapModal').style.display = 'none';
+  }
+
+  function fetchHospitals() {
+  fetch('/get_nearest_hospitals', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      latitude: selectedLat,
+      longitude: selectedLon
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById("resultsContainer");
+    container.innerHTML = "<h4 style='color:#d63384;'>Nearest Hospitals:</h4>";
+
+    if (data.nearest_hospitals.length === 0) {
+      container.innerHTML += "<p>No hospitals found nearby.</p>";
+      return;
+    }
+
+    data.nearest_hospitals.forEach(h => {
+      container.innerHTML += `
+        <div style="padding: 15px; background: #fff0f6; border-left: 5px solid #d63384; margin: 10px 0; border-radius: 10px;">
+          <strong>${h.name}</strong><br>
+          Distance: ${h.distance.toFixed(2)} km
+        </div>
+      `;
+     
+    });
+    document.getElementById("resultsContainer").scrollIntoView({ behavior: "smooth" });
+  })
+  .catch(err => {
+    console.error('Error fetching hospitals:', err);
+    document.getElementById("resultsContainer").innerHTML = "<p style='color: red;'>Failed to load hospitals.</p>";
+  });
+}
+
+
+</script>
+
+
+</body>
+</html>

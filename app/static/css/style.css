@@ -1,0 +1,59 @@
+/* Reset and Basics */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+  }
+  
+  /* Sections */
+  .section-padding {
+    padding: 60px 20px;
+  }
+  .container {
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+  }
+  h2.ser-title {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  .botm-line {
+    width: 60px;
+    height: 4px;
+    background-color: #d63384;
+    border: none;
+    margin-bottom: 20px;
+  }
+  
+  /* Buttons */
+  button,
+  .btn {
+    background-color: #d63384;
+    color: #fff;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover,
+  .btn:hover {
+    background-color: #b92d6d;
+  }
+  
+ 
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  

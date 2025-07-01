@@ -1,0 +1,81 @@
+<section id="banner" class="banner">
+  <div class="banner-overlay">
+    <div class="container">
+      <div class="banner-content">
+        <h1>Healthcare at your desk!!</h1>
+        <p>Bringing you the most accessible experience<br>because We Care For You!</p>
+        <a href="#service" class="btn btn-appoint">Explore.</a>
+
+        <div class="banner-scroll">
+          <a href="#service">&#x25BC;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+   .banner {
+    background-image: url('/static/images/bg-banner.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+  }
+  .banner-content {
+    color: white;
+  }
+  
+  .banner-content h1 {
+    font-size: 42px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  
+  .banner-content p {
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .btn-appoint {
+    background-color: #d63384;
+    color: #fff;
+    padding: 12px 26px;
+    border-radius: 25px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-appoint:hover {
+    background-color: #b92d6d;
+  }
+  
+  .banner-scroll {
+    margin-top: 40px;
+  }
+  
+  .banner-scroll a {
+    font-size: 32px;
+    color: #fff;
+    text-decoration: none;
+  }
+</style>

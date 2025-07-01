@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HEALTH COMPANION</title>
+  <meta name="description" content="a website integrated with chatbot to assist patients">
+
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Raleway|Candal" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon.jpg') }}">
+
+</head>
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+
+  {% include '_navbar.html' %}
+  {% block content %}{% endblock %}
+
+</body>
+</html>
